@@ -1,0 +1,16 @@
+FROM python:3.7-windowsservercore-1809 
+MAINTAINER sanmuk21@gmail.com
+
+RUN pip install --no-cache-dir flask
+
+RUN powershell Invoke-webrequest http://nginx.org/download/nginx-1.12.0.zip -UseBasicParsing -outfile c:\\nginx.zip
+RUN powershell Expand-Archive c:\\nginx.zip -Dest c:\\nginx
+
+COPY app.conf c:\\nginx\\nginx-1.12.0\\conf\\nginx.conf
+
+COPY app.py . 
+COPY pom.xml .
+
+EXPOSE 8080
+
+CMD powershell c:\\nginx\\nginx-1.12.0\\nginx.exe && python app.py
